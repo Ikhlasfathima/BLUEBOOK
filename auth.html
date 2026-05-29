@@ -99,6 +99,8 @@
 </div>
 
 <script>
+const API_BASE = "http://127.0.0.1:8000";
+
 let currentRole='student', currentMode='login';
 
 function switchRole(role){
@@ -143,7 +145,7 @@ function handleAuth(){
         let email=u.toLowerCase().replace(/\s+/g,'_')+'@test.com';
         let body={username:u,email,password:p,role:currentRole};
         if(currentRole==='student'&&c) body.class_id=c;
-        fetch('http://127.0.0.1:8000/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+        fetch(`${API_BASE}/signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
         .then(r=>r.json().then(d=>({ok:r.ok,d})))
         .then(({ok,d})=>{
             if(!ok){ let det=Array.isArray(d.detail)?d.detail.map(e=>e.msg).join(', '):d.detail; showMsg('Signup failed: '+det,'error'); return; }
@@ -152,7 +154,7 @@ function handleAuth(){
         }).catch(()=>showMsg('Cannot reach server on port 8000.','error'));
 
     } else {
-        fetch('http://127.0.0.1:8000/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})})
+        fetch(`${API_BASE}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})})
         .then(r=>r.json().then(d=>({ok:r.ok,d})))
         .then(({ok,d})=>{
             if(!ok){ showMsg('Login failed: '+(d.detail||'Invalid credentials'),'error'); return; }

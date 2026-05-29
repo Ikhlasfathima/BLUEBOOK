@@ -225,6 +225,7 @@
 </div>
 
 <script>
+const API_BASE = "http://127.0.0.1:8000";
 // Auth
 let user  = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
@@ -361,7 +362,7 @@ function submitAssignment(){
 
     let analytics = computeTypingAnalytics();
 
-    fetch('http://127.0.0.1:8000/submit',{
+    fetch(`${API_BASE}/submit`,{
         method:'POST',
         headers: authHeaders(),
         body: JSON.stringify({
@@ -409,7 +410,7 @@ function loadTasks(){
     }
     disp.innerText='Class: '+classId;
 
-    fetch('http://127.0.0.1:8000/assignments/class/'+encodeURIComponent(classId), { headers: authHeaders() })
+    fetch(`${API_BASE}/assignments/class/`+encodeURIComponent(classId), { headers: authHeaders() })
     .then(r=>r.json())
     .then(data=>{
         let list = document.getElementById('tasksList');

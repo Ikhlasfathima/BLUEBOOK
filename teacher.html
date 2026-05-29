@@ -192,6 +192,7 @@
 </div>
 
 <script>
+const API_BASE = "http://127.0.0.1:8000";
 // ── Auth ──────────────────────────────────────────────────────────────────────
 let user  = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
@@ -207,7 +208,7 @@ function logout(){ localStorage.clear(); window.location.href='./auth.html'; }
 
 // ── Load my assignments ───────────────────────────────────────────────────────
 function loadMyAssignments(){
-    fetch('http://127.0.0.1:8000/assignments', { headers: authHeaders() })
+    fetch(`${API_BASE}/assignments`, { headers: authHeaders() })
     .then(r=>r.json())
     .then(data=>{
         let mine = data.filter(a=>a.teacher_id===user.id);
@@ -241,7 +242,7 @@ function createAssignment(){
     if(!classId){ msg.className='inline-msg error'; msg.innerText='Please enter a Class ID.'; return; }
     if(!deadline){ msg.className='inline-msg error'; msg.innerText='Please set a submission deadline.'; return; }
 
-    fetch('http://127.0.0.1:8000/assignments',{
+    fetch(`${API_BASE}/assignments`,{
         method:'POST', headers: authHeaders(),
         body: JSON.stringify({title,description:'',deadline,max_marks:maxMarks,teacher_id:user.id,class_id:classId})
     })
@@ -284,7 +285,7 @@ function loadAnalytics(){
     let container = document.getElementById('results');
     container.innerHTML='<div class="loading">Loading submissions…</div>';
 
-    fetch('http://127.0.0.1:8000/analytics/'+assignmentId, { headers: authHeaders() })
+    fetch(`${API_BASE}/analytics/`+assignmentId, { headers: authHeaders() })
     .then(r=>r.json())
     .then(data=>{
         container.innerHTML='';
@@ -374,7 +375,7 @@ function saveMarks(submissionId, maxM){
     if(isNaN(marks)||marks<0){ alert('Please enter a valid marks value.'); return; }
     if(maxM<9999 && marks>maxM){ alert('Marks cannot exceed '+maxM+'.'); return; }
 
-    fetch('http://127.0.0.1:8000/submissions/'+submissionId+'/marks',{
+    fetch(`${API_BASE}/submissions/`+submissionId+'/marks',{
         method:'PATCH', headers: authHeaders(),
         body: JSON.stringify({marks})
     })
@@ -399,7 +400,7 @@ function toggleSummary(submissionId){
     body.innerHTML = '<div class="ai-loading">Generating summary…</div>';
     box.classList.add('visible');
 
-    fetch('http://127.0.0.1:8000/summarize-submission/'+submissionId, { headers: authHeaders() })
+    fetch(`${API_BASE}/summarize-submission/`+submissionId, { headers: authHeaders() })
     .then(r=>r.json())
     .then(data=>{
         let kpHTML = '';
