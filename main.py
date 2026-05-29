@@ -1,5 +1,7 @@
 import sys
 import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 if ROOT not in sys.path:
@@ -16,6 +18,8 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="."), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,8 +32,19 @@ app.include_router(auth.router)
 app.include_router(teacher.router)
 app.include_router(student.router)
 
+@app.get("/editor")
+def editor_page():
+    return FileResponse("editor.html")
+
+@app.get("/teacher")
+def teacher_page():
+    return FileResponse("teacher.html")
+
+@app.get("/marks")
+def marks_page():
+    return FileResponse("marks.html")
+
 # Health check — visit http://127.0.0.1:8000/ to confirm server is up
 @app.get("/")
-def root():
-    return {"status": "BLUEBOOK API is running"}
- 
+def home():
+    return FileResponse("auth.html")
