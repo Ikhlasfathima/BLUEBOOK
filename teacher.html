@@ -198,13 +198,13 @@ let user  = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
 let maxMarksMap = {};
 
-if(!user || !token){ window.location.href='/auth'; }
-else if(user.role !== 'teacher'){ alert('Please login as a teacher.'); window.location.href='/auth'; }
+if(!user || !token){ window.location.href='/'; }
+else if(user.role !== 'teacher'){ alert('Please login as a teacher.'); window.location.href='/'; }
 
 if(user && user.username) document.getElementById('navUser').innerText = user.username;
 
 function authHeaders(){ return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
-function logout(){ localStorage.clear(); window.location.href='/auth'; }
+function logout(){ localStorage.clear(); window.location.href='/'; }
 
 // ── Load my assignments ───────────────────────────────────────────────────────
 function loadMyAssignments(){
