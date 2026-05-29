@@ -32,6 +32,12 @@ app.include_router(auth.router)
 app.include_router(teacher.router)
 app.include_router(student.router)
 
+
+# Health check — visit http://127.0.0.1:8000/ to confirm server is up
+@app.get("/")
+def home():
+    return FileResponse("auth.html")
+
 @app.get("/editor")
 def editor_page():
     return FileResponse("editor.html")
@@ -43,8 +49,3 @@ def teacher_page():
 @app.get("/marks")
 def marks_page():
     return FileResponse("marks.html")
-
-# Health check — visit http://127.0.0.1:8000/ to confirm server is up
-@app.get("/")
-def home():
-    return FileResponse("auth.html")

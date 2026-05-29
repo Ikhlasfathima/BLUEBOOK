@@ -164,7 +164,9 @@ function handleAuth(){
             localStorage.setItem('user', JSON.stringify({
                 id:d.id, username:d.username, role:d.role, class_id:d.class_id
             }));
-            window.location.href = d.role==='teacher' ? './teacher.html' : './editor.html';
+            window.location.href = d.role==='teacher'
+    ? '/teacher'
+    : '/editor';
         }).catch(()=>showMsg('Cannot reach server on port 8000.','error'));
     }
 }
