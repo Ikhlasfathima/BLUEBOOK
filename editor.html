@@ -234,7 +234,7 @@ if(!user || !token){ window.location.href='/'; }
 else if(user.role !== 'student'){ alert('Please login as a student.'); window.location.href='/'; }
 
 function authHeaders(){ return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
-function logout(){ localStorage.clear(); window.location.href='/auth'; }
+function logout(){ localStorage.clear(); window.location.href='/'; }
 
 // Tabs
 function showTab(name){
