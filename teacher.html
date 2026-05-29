@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BLUEBOOK - Teacher Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        :root{
+            --blue-50:#EFF4FF;--blue-100:#D6E3FF;--blue-400:#4A7CF7;--blue-500:#3060E0;--blue-600:#2149C0;
+            --slate-50:#F8FAFC;--slate-100:#F1F4F9;--slate-200:#E4E9F2;--slate-300:#CBD3E0;
+            --slate-400:#8A96AD;--slate-600:#4A5568;--slate-700:#2D3748;--slate-800:#1E2535;
+            --white:#FFFFFF;
+            --green-50:#F0FDF4;--green-100:#DCFCE7;--green-600:#15803D;--green-700:#166534;
+            --red-50:#FEF2F2;--red-100:#FEE2E2;--red-600:#B91C1C;
+            --amber-50:#FFFBEB;--amber-100:#FEF3C7;--amber-400:#FBBF24;--amber-600:#B45309;
+            --purple-50:#F3F0FF;--purple-100:#DDD6FE;--purple-600:#5B21B6;
+            --radius:12px;--radius-sm:8px;
+        }
+        body{font-family:'DM Sans',sans-serif;background:var(--slate-100);min-height:100vh;color:var(--slate-800);}
+        nav{background:var(--white);border-bottom:1px solid var(--slate-200);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+        .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+        .nav-icon{width:32px;height:32px;background:var(--blue-400);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+        .nav-icon svg{width:18px;height:18px;fill:white;}
+        .nav-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--slate-800);}
+        .nav-badge{font-size:11px;font-weight:500;background:var(--purple-50);color:var(--purple-600);padding:3px 10px;border-radius:20px;border:1px solid var(--purple-100);}
+        .nav-actions{display:flex;align-items:center;gap:6px;}
+        .nav-btn{padding:7px 15px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+        .nav-btn-ghost{background:transparent;color:var(--slate-600);}
+        .nav-btn-ghost:hover{background:var(--slate-100);}
+        .nav-btn-ghost.active{background:var(--blue-50);color:var(--blue-500);border-color:var(--blue-100);}
+        .nav-btn-outline{background:transparent;color:var(--slate-600);border-color:var(--slate-200);}
+        .nav-btn-outline:hover{border-color:var(--slate-300);background:var(--slate-50);}
+        .nav-user{font-size:13px;color:var(--slate-500);}
+        .page-wrap{max-width:980px;margin:0 auto;padding:36px 24px 60px;}
+        .page-header{margin-bottom:26px;}
+        .page-header h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--slate-800);margin-bottom:3px;}
+        .page-header p{font-size:14px;color:var(--slate-400);}
+        .top-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+        @media(max-width:680px){.top-grid{grid-template-columns:1fr;}}
+        .card{background:var(--white);border:1px solid var(--slate-200);border-radius:var(--radius);padding:22px 24px;}
+        .card-title{font-size:14px;font-weight:500;color:var(--slate-700);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+        label.field-label{display:block;font-size:11px;font-weight:500;color:var(--slate-400);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:5px;}
+        input[type="text"],input[type="number"],input[type="date"]{width:100%;padding:9px 12px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--slate-800);background:var(--white);outline:none;transition:border-color 0.15s;margin-bottom:11px;}
+        input:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(74,124,247,0.1);}
+        input::placeholder{color:var(--slate-400);}
+        .btn-primary{padding:10px 20px;background:var(--blue-400);color:white;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.15s;}
+        .btn-primary:hover{background:var(--blue-500);}
+        .btn-secondary{padding:8px 16px;background:var(--white);color:var(--blue-500);border:1.5px solid var(--blue-100);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+        .btn-secondary:hover{background:var(--blue-50);border-color:var(--blue-400);}
+        .btn-success{padding:7px 14px;background:var(--white);color:var(--green-600);border:1.5px solid var(--green-100);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+        .btn-success:hover{background:var(--green-50);border-color:var(--green-600);}
+        .inline-msg{font-size:13px;padding:8px 12px;border-radius:var(--radius-sm);margin-top:10px;display:none;}
+        .inline-msg.success{background:var(--green-50);color:var(--green-600);border:1px solid var(--green-100);display:block;}
+        .inline-msg.error{background:var(--red-50);color:var(--red-600);border:1px solid var(--red-100);display:block;}
+        .assign-list{display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto;margin-top:10px;}
+        .assign-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:var(--radius-sm);}
+        .assign-item-title{font-size:13px;font-weight:500;color:var(--slate-700);}
+        .assign-item-meta{font-size:11px;color:var(--slate-400);margin-top:2px;}
+        .assign-id-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--blue-50);color:var(--blue-600);border:1px solid var(--blue-100);white-space:nowrap;}
+        .assign-empty{font-size:13px;color:var(--slate-400);text-align:center;padding:20px;}
+        .search-row{display:flex;gap:12px;margin-bottom:24px;}
+        .search-row input[type="number"]{flex:1;margin-bottom:0;padding:11px 14px;font-size:14px;}
+        .section-heading{font-family:'Playfair Display',serif;font-size:18px;color:var(--slate-800);margin-bottom:16px;}
+
+        /* Submission card */
+        .sub-card{background:var(--white);border:1px solid var(--slate-200);border-radius:var(--radius);padding:20px 24px;margin-bottom:18px;}
+        .sub-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+        .sub-meta{display:flex;flex-direction:column;gap:3px;}
+        .sub-id{font-size:11px;font-weight:500;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;}
+        .sub-student{font-size:15px;font-weight:500;color:var(--slate-800);}
+        .sub-student-id{font-size:12px;color:var(--slate-400);}
+        .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+        .status-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;}
+        .status-pill.warning{background:var(--red-50);color:var(--red-600);border:1px solid var(--red-100);}
+        .status-pill.good{background:var(--green-50);color:var(--green-600);border:1px solid var(--green-100);}
+
+        /* Suspicion badge */
+        .suspicion-badge{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;}
+        .suspicion-green{background:var(--green-50);color:var(--green-700);border:1px solid var(--green-100);}
+        .suspicion-amber{background:var(--amber-50);color:var(--amber-600);border:1px solid var(--amber-100);}
+        .suspicion-red{background:var(--red-50);color:var(--red-600);border:1px solid var(--red-100);}
+
+        .sub-content-pre{background:var(--slate-50);border:1px solid var(--slate-200);border-radius:var(--radius-sm);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--slate-600);line-height:1.7;max-height:130px;overflow-y:auto;margin-bottom:14px;}
+
+        /* Two-section grid: paste bars + typing analytics */
+        .analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+        @media(max-width:600px){.analytics-grid{grid-template-columns:1fr;}}
+        .analytics-section-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--slate-400);margin-bottom:10px;}
+
+        /* Bars */
+        .bar-row{margin-bottom:10px;}
+        .bar-header{display:flex;justify-content:space-between;margin-bottom:5px;}
+        .bar-label{font-size:12px;color:var(--slate-600);}
+        .bar-pct{font-size:12px;font-weight:500;color:var(--slate-700);}
+        .bar-track{height:8px;background:var(--slate-200);border-radius:99px;overflow:hidden;}
+        .bar-fill{height:100%;border-radius:99px;}
+        .bar-typed{background:var(--blue-400);} .bar-pasted{background:var(--amber-400);}
+
+        /* Typing stat chips */
+        .typing-chips{display:flex;flex-wrap:wrap;gap:8px;}
+        .chip{padding:5px 12px;border-radius:20px;font-size:12px;background:var(--slate-100);color:var(--slate-600);border:1px solid var(--slate-200);}
+        .chip b{color:var(--slate-800);}
+
+        /* Suspicion reasons */
+        .suspicion-reasons{margin-top:8px;font-size:12px;color:var(--slate-500);}
+        .suspicion-reasons span{display:inline-block;margin-right:6px;margin-bottom:3px;padding:2px 8px;background:var(--red-50);color:var(--red-600);border-radius:10px;font-size:11px;}
+
+        /* Marks row */
+        .marks-section{display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:var(--radius-sm);margin-bottom:12px;flex-wrap:wrap;}
+        .marks-label{font-size:11px;font-weight:500;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;}
+        .marks-input{width:75px;padding:6px 9px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--slate-800);background:var(--white);outline:none;margin-bottom:0;transition:border-color 0.15s;}
+        .marks-input:focus{border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(74,124,247,0.1);}
+        .marks-max{font-size:13px;color:var(--slate-400);}
+        .marks-current{margin-left:auto;font-size:13px;font-weight:500;padding:4px 12px;border-radius:20px;}
+        .marks-current.graded{background:var(--green-50);color:var(--green-600);border:1px solid var(--green-100);}
+        .marks-current.ungraded{background:var(--amber-50);color:var(--amber-600);border:1px solid var(--amber-100);}
+        .marks-saved-msg{font-size:12px;color:var(--green-600);display:none;}
+        .marks-saved-msg.show{display:inline;}
+
+        /* AI summary */
+        .sub-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+        .ai-summary-box{margin-top:14px;padding:16px 18px;background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius-sm);display:none;}
+        .ai-summary-box.visible{display:block;}
+        .ai-summary-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--blue-600);margin-bottom:8px;}
+        .ai-summary-text{font-size:14px;color:var(--slate-700);line-height:1.75;margin-bottom:10px;}
+        .ai-key-points{list-style:none;padding:0;margin:0;}
+        .ai-key-points li{font-size:13px;color:var(--slate-600);padding:4px 0 4px 16px;position:relative;line-height:1.6;}
+        .ai-key-points li::before{content:"→";position:absolute;left:0;color:var(--blue-400);}
+        .ai-loading{color:var(--slate-400);font-style:italic;font-size:14px;}
+
+        .empty-state{background:var(--white);border:1px solid var(--slate-200);border-radius:var(--radius);text-align:center;padding:48px 24px;}
+        .empty-state h3{font-size:17px;color:var(--slate-600);margin-bottom:5px;}
+        .empty-state p{font-size:14px;color:var(--slate-400);}
+        .loading{text-align:center;padding:40px;color:var(--slate-400);font-size:14px;}
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="./teacher.html">
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h10.5a2 2 0 0 1 2 2v1.5M4 4v16h12.5a2 2 0 0 0 2-2V7.5M4 4H2m16.5 3.5H4"/><rect x="7" y="10" width="7" height="1.5" rx="0.75"/><rect x="7" y="13" width="5" height="1.5" rx="0.75"/></svg>
+        </div>
+        <span class="nav-title">BLUEBOOK</span>
+    </a>
+    <div class="nav-actions">
+        <span class="nav-badge">Teacher</span>
+        <span class="nav-user" id="navUser"></span>
+        <button class="nav-btn nav-btn-ghost active">Dashboard</button>
+        <button class="nav-btn nav-btn-outline" onclick="logout()">Sign Out</button>
+    </div>
+</nav>
+
+<div class="page-wrap">
+    <div class="page-header">
+        <h2>Teacher Dashboard</h2>
+        <p>Create assignments, review submissions, grade student work, and analyse typing behaviour.</p>
+    </div>
+
+    <div class="top-grid">
+        <!-- Create Assignment -->
+        <div class="card">
+            <div class="card-title">Create Assignment</div>
+            <label class="field-label">Assignment Title</label>
+            <input type="text" id="newTitle" placeholder="e.g. Essay on Climate Change">
+            <label class="field-label">Class ID</label>
+            <input type="text" id="newClassId" placeholder="e.g. 3rd Year BCA">
+            <label class="field-label">Maximum Marks</label>
+            <input type="number" id="newMaxMarks" placeholder="e.g. 100" min="1">
+            <label class="field-label">Submission Deadline</label>
+            <input type="date" id="newDeadline">
+            <button class="btn-primary" onclick="createAssignment()">Create Assignment</button>
+            <div class="inline-msg" id="createMsg"></div>
+        </div>
+
+        <!-- My Assignments -->
+        <div class="card">
+            <div class="card-title">My Assignments</div>
+            <div class="assign-list" id="assignList">
+                <div class="assign-empty">Loading…</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-heading">Submissions Analytics</div>
+    <div class="search-row">
+        <input type="number" id="assignmentId" placeholder="Enter Assignment ID to view submissions">
+        <button class="btn-primary" onclick="loadAnalytics()">Load Submissions</button>
+    </div>
+    <div id="results"></div>
+</div>
+
+<script>
+// ── Auth ──────────────────────────────────────────────────────────────────────
+let user  = JSON.parse(localStorage.getItem('user'));
+let token = localStorage.getItem('token');
+let maxMarksMap = {};
+
+if(!user || !token){ window.location.href='./auth.html'; }
+else if(user.role !== 'teacher'){ alert('Please login as a teacher.'); window.location.href='./auth.html'; }
+
+if(user && user.username) document.getElementById('navUser').innerText = user.username;
+
+function authHeaders(){ return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
+function logout(){ localStorage.clear(); window.location.href='./auth.html'; }
+
+// ── Load my assignments ───────────────────────────────────────────────────────
+function loadMyAssignments(){
+    fetch('http://127.0.0.1:8000/assignments', { headers: authHeaders() })
+    .then(r=>r.json())
+    .then(data=>{
+        let mine = data.filter(a=>a.teacher_id===user.id);
+        let list = document.getElementById('assignList');
+        if(mine.length===0){ list.innerHTML='<div class="assign-empty">No assignments yet.</div>'; return; }
+        list.innerHTML='';
+        mine.forEach(a=>{
+            maxMarksMap[a.id]=a.max_marks;
+            list.innerHTML+=`
+            <div class="assign-item">
+                <div>
+                    <div class="assign-item-title">${a.title}</div>
+                    <div class="assign-item-meta">${a.class_id||'No class'} - Max: ${a.max_marks} - ${a.deadline||'No deadline'}</div>
+                </div>
+                <div class="assign-id-badge">ID: ${a.id}</div>
+            </div>`;
+        });
+    })
+    .catch(()=>{ document.getElementById('assignList').innerHTML='<div class="assign-empty">Could not load.</div>'; });
+}
+
+// ── Create Assignment ─────────────────────────────────────────────────────────
+function createAssignment(){
+    let title    = document.getElementById('newTitle').value.trim();
+    let classId  = document.getElementById('newClassId').value.trim();
+    let maxMarks = parseInt(document.getElementById('newMaxMarks').value);
+    let deadline = document.getElementById('newDeadline').value;
+    let msg      = document.getElementById('createMsg');
+
+    if(!title || !maxMarks || maxMarks<1){ msg.className='inline-msg error'; msg.innerText='Please enter a title and valid maximum marks.'; return; }
+    if(!classId){ msg.className='inline-msg error'; msg.innerText='Please enter a Class ID.'; return; }
+    if(!deadline){ msg.className='inline-msg error'; msg.innerText='Please set a submission deadline.'; return; }
+
+    fetch('http://127.0.0.1:8000/assignments',{
+        method:'POST', headers: authHeaders(),
+        body: JSON.stringify({title,description:'',deadline,max_marks:maxMarks,teacher_id:user.id,class_id:classId})
+    })
+    .then(r=>r.json().then(data=>({ok:r.ok, status:r.status, data})))
+    .then(({ok, status, data})=>{
+        if(!ok){
+            let detail = data.detail;
+            if(Array.isArray(detail)) detail = detail.map(e=>e.msg||JSON.stringify(e)).join(', ');
+            msg.className='inline-msg error';
+            msg.innerText='Error '+status+': '+detail;
+            return;
+        }
+        msg.className='inline-msg success';
+        msg.innerText='Assignment created (ID: '+data.assignment_id+') for class: '+classId;
+        document.getElementById('newTitle').value='';
+        document.getElementById('newClassId').value='';
+        document.getElementById('newMaxMarks').value='';
+        document.getElementById('newDeadline').value='';
+        loadMyAssignments();
+    })
+    .catch(err=>{ msg.className='inline-msg error'; msg.innerText='Network error: '+err.message; });
+}
+
+// ── Suspicion badge helper ────────────────────────────────────────────────────
+function suspicionBadge(level, score, reasons){
+    let colorClass = level==='Normal' ? 'suspicion-green' : level==='Mildly Suspicious' ? 'suspicion-amber' : 'suspicion-red';
+    let icon       = level==='Normal' ? '' : level==='Mildly Suspicious' ? '' : '';
+    let reasonsHTML = '';
+    if(reasons && reasons.length>0 && level!=='Normal'){
+        reasonsHTML = '<div class="suspicion-reasons">'+reasons.map(r=>'<span>'+r+'</span>').join('')+'</div>';
+    }
+    return `<span class="suspicion-badge ${colorClass}">${icon} ${level} (${score}/5)</span>${reasonsHTML}`;
+}
+
+// ── Load Submissions ──────────────────────────────────────────────────────────
+function loadAnalytics(){
+    let assignmentId = parseInt(document.getElementById('assignmentId').value.trim());
+    if(!assignmentId || isNaN(assignmentId)){ alert('Please enter a valid assignment ID.'); return; }
+
+    let container = document.getElementById('results');
+    container.innerHTML='<div class="loading">Loading submissions…</div>';
+
+    fetch('http://127.0.0.1:8000/analytics/'+assignmentId, { headers: authHeaders() })
+    .then(r=>r.json())
+    .then(data=>{
+        container.innerHTML='';
+        if(!data || data.length===0 || data.detail){
+            container.innerHTML='<div class="empty-state"><h3>No submissions found</h3><p>No students have submitted for this assignment yet.</p></div>';
+            return;
+        }
+        let maxM = maxMarksMap[assignmentId] || '—';
+        data.forEach(sub=>{
+            let isWarn    = sub['pasted_%'] > 50;
+            let curMarks  = sub.marks !== null && sub.marks !== undefined ? sub.marks : null;
+            let marksDisp = curMarks!==null
+                ? '<span class="marks-current graded">Marks: '+curMarks+' / '+maxM+'</span>'
+                : '<span class="marks-current ungraded">Ungraded</span>';
+
+            container.innerHTML+=`
+            <div class="sub-card" id="card-${sub.submission_id}">
+
+                <div class="sub-card-header">
+                    <div class="sub-meta">
+                        <div class="sub-id">Submission #${sub.submission_id}</div>
+                        <div class="sub-student">${sub.student_name||'Student'}</div>
+                        <div class="sub-student-id">Student ID: ${sub.student_id}</div>
+                    </div>
+                    <div class="header-right">
+                        <div class="status-pill ${isWarn?'warning':'good'}">${isWarn?' High paste':' Mostly typed'}</div>
+                        ${suspicionBadge(sub.suspicion_level, sub.suspicion_score, sub.suspicion_reasons)}
+                    </div>
+                </div>
+
+                <div class="sub-content-pre">${sub.content}</div>
+
+                <div class="analytics-grid">
+                    <!-- Paste bars -->
+                    <div>
+                        <div class="analytics-section-label">Paste Analysis</div>
+                        <div class="bar-row">
+                            <div class="bar-header"><span class="bar-label">Typed</span><span class="bar-pct">${sub['typed_%']}%</span></div>
+                            <div class="bar-track"><div class="bar-fill bar-typed" style="width:${sub['typed_%']}%"></div></div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-header"><span class="bar-label">Pasted</span><span class="bar-pct">${sub['pasted_%']}%</span></div>
+                            <div class="bar-track"><div class="bar-fill bar-pasted" style="width:${sub['pasted_%']}%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Typing behaviour chips -->
+                    <div>
+                        <div class="analytics-section-label">Typing Behaviour Analysis</div>
+                        <div class="typing-chips">
+                            <div class="chip">Speed <b>${sub.avg_typing_speed} c/s</b></div>
+                            <div class="chip">Variance <b>${sub.typing_variance}</b></div>
+                            <div class="chip">Pauses <b>${sub.pause_count}</b></div>
+                            <div class="chip">Backspaces <b>${sub.backspace_count}</b></div>
+                            <div class="chip">Bursts <b>${sub.burst_events}</b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marks-section">
+                    <span class="marks-label">Assign Marks</span>
+                    <input class="marks-input" type="number" id="marksInput-${sub.submission_id}"
+                        placeholder="0" min="0" ${maxM!=='—'?'max="'+maxM+'"':''}
+                        value="${curMarks!==null?curMarks:''}">
+                    <span class="marks-max">/ ${maxM}</span>
+                    <button class="btn-success" onclick="saveMarks(${sub.submission_id},${maxM!=='—'?maxM:9999})">Save Marks</button>
+                    ${marksDisp}
+                    <span class="marks-saved-msg" id="marksSaved-${sub.submission_id}">✓ Saved</span>
+                </div>
+
+                <div class="sub-actions">
+                    <button class="btn-secondary" onclick="toggleSummary(${sub.submission_id})">AI Summary</button>
+                </div>
+                <div class="ai-summary-box" id="summary-${sub.submission_id}">
+                    <div class="ai-summary-label">AI Summary</div>
+                    <div id="summary-body-${sub.submission_id}"><div class="ai-loading">Generating summary…</div></div>
+                </div>
+            </div>`;
+        });
+    })
+    .catch(err=>{ container.innerHTML='<div class="loading">Failed to load. Check the server.</div>'; console.error(err); });
+}
+
+// ── Save Marks ────────────────────────────────────────────────────────────────
+function saveMarks(submissionId, maxM){
+    let marks = parseFloat(document.getElementById('marksInput-'+submissionId).value);
+    if(isNaN(marks)||marks<0){ alert('Please enter a valid marks value.'); return; }
+    if(maxM<9999 && marks>maxM){ alert('Marks cannot exceed '+maxM+'.'); return; }
+
+    fetch('http://127.0.0.1:8000/submissions/'+submissionId+'/marks',{
+        method:'PATCH', headers: authHeaders(),
+        body: JSON.stringify({marks})
+    })
+    .then(r=>r.json())
+    .then(()=>{
+        let msg = document.getElementById('marksSaved-'+submissionId);
+        msg.classList.add('show');
+        setTimeout(()=>msg.classList.remove('show'), 2500);
+        let badge = document.querySelector('#card-'+submissionId+' .marks-current');
+        if(badge){ badge.className='marks-current graded'; badge.innerText='Marks: '+marks+' / '+(maxM<9999?maxM:'—'); }
+    })
+    .catch(()=>alert('Failed to save marks.'));
+}
+
+// ── AI Summary (inline toggle) ────────────────────────────────────────────────
+function toggleSummary(submissionId){
+    let box    = document.getElementById('summary-'+submissionId);
+    let body   = document.getElementById('summary-body-'+submissionId);
+
+    if(box.classList.contains('visible')){ box.classList.remove('visible'); return; }
+
+    body.innerHTML = '<div class="ai-loading">Generating summary…</div>';
+    box.classList.add('visible');
+
+    fetch('http://127.0.0.1:8000/summarize-submission/'+submissionId, { headers: authHeaders() })
+    .then(r=>r.json())
+    .then(data=>{
+        let kpHTML = '';
+        if(data.key_points && data.key_points.length>0){
+            kpHTML = '<ul class="ai-key-points">'+data.key_points.map(p=>'<li>'+p+'</li>').join('')+'</ul>';
+        }
+        body.innerHTML = '<div class="ai-summary-text">'+data.summary+'</div>'+kpHTML;
+    })
+    .catch(()=>{ body.innerHTML='<div class="ai-loading">Could not generate summary.</div>'; });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadMyAssignments();
+</script>
+</body>
+</html>
