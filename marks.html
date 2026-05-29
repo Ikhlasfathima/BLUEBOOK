@@ -52,7 +52,7 @@
 </head>
 <body>
 <nav>
-    <a class="nav-brand" href="./editor.html">
+    <a class="nav-brand" href="/editor">
         <div class="nav-icon">
             <svg viewBox="0 0 24 24"><path d="M4 4h10.5a2 2 0 0 1 2 2v1.5M4 4v16h12.5a2 2 0 0 0 2-2V7.5M4 4H2m16.5 3.5H4"/><rect x="7" y="10" width="7" height="1.5" rx="0.75"/><rect x="7" y="13" width="5" height="1.5" rx="0.75"/></svg>
         </div>
@@ -60,7 +60,7 @@
     </a>
     <div class="nav-actions">
         <span class="nav-badge">Student</span>
-        <button class="nav-btn nav-btn-ghost" onclick="window.location.href='./editor.html'">Editor</button>
+        <button class="nav-btn nav-btn-ghost" onclick="window.location.href='/editor'">Editor</button>
         <button class="nav-btn nav-btn-ghost active">My Marks</button>
         <button class="nav-btn nav-btn-outline" onclick="logout()">Sign Out</button>
     </div>
@@ -76,8 +76,8 @@
 const API_BASE = "https://bluebook-gg5l.onrender.com";
 let user  = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
-if(!user || !token) window.location.href='./auth.html';
-function logout(){ localStorage.clear(); window.location.href='./auth.html'; }
+if(!user || !token) window.location.href='/auth';
+function logout(){ localStorage.clear(); window.location.href='/auth'; }
 
 fetch(`${API_BASE}/my-submissions/`+user.id, {
     headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }

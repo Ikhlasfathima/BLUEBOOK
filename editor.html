@@ -100,7 +100,7 @@
 <body>
 
 <nav>
-    <a class="nav-brand" href="./editor.html">
+    <a class="nav-brand" href="/editor">
         <div class="nav-icon">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -114,7 +114,7 @@
     </a>
     <div class="nav-actions">
         <span class="nav-badge">Student</span>
-        <button class="nav-btn nav-btn-ghost" onclick="window.location.href='./marks.html'">My Marks</button>
+        <button class="nav-btn nav-btn-ghost" onclick="window.location.href='/marks'">My Marks</button>
         <button class="nav-btn nav-btn-outline" onclick="logout()">Sign Out</button>
     </div>
 </nav>
@@ -230,11 +230,11 @@ const API_BASE = "https://bluebook-gg5l.onrender.com";
 let user  = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
 
-if(!user || !token){ window.location.href='./auth.html'; }
-else if(user.role !== 'student'){ alert('Please login as a student.'); window.location.href='./auth.html'; }
+if(!user || !token){ window.location.href='/auth'; }
+else if(user.role !== 'student'){ alert('Please login as a student.'); window.location.href='/auth'; }
 
 function authHeaders(){ return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
-function logout(){ localStorage.clear(); window.location.href='./auth.html'; }
+function logout(){ localStorage.clear(); window.location.href='/auth'; }
 
 // Tabs
 function showTab(name){
